@@ -45,7 +45,7 @@ impl utils::Solution for Solution {
                 if found == 8 {
                     break;
                 }
-            }            
+            }
             i += 1;
         }
         // Implement for problem
@@ -67,11 +67,11 @@ impl utils::Solution for Solution {
                 if pos < 8 && r[pos] == '_' {
                     r[pos] = ch;
                     println!("{}", r.iter().collect::<String>());
-                    if r.iter().all(|c| *c!='_') {
+                    if r.iter().all(|c| *c != '_') {
                         break;
                     }
                 }
-            }            
+            }
             i += 1;
         }
         // Implement for problem
@@ -83,10 +83,11 @@ fn get_md5(prefix: &str, value: i32) -> String {
     let trial = format!("{}{}", prefix, value);
     let md5 = md5::compute(&trial);
     debug!(value, md5=?md5);
-    md5.bytes().flatten()
-    .take(4)
-    .fold(String::new(), |mut acc, v| {
-        acc.push_str(&format!("{:02x}", v));
-        acc
-    })
+    md5.bytes()
+        .flatten()
+        .take(4)
+        .fold(String::new(), |mut acc, v| {
+            acc.push_str(&format!("{:02x}", v));
+            acc
+        })
 }

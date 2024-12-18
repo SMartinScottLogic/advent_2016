@@ -12,6 +12,7 @@ lazy_static = {workspace = true}
 pathfinding = {workspace = true}
 itertools = {workspace = true}
 memoize = {workspace = true}
+md5 = "0.7.0"                # The package provides the MD5 hash function.
 
 [dependencies.utils]
 path = "../utils"

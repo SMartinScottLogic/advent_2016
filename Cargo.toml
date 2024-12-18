@@ -4,7 +4,7 @@ members = [
     "utils",
     "template",
     "xtask",
-    "day1", "day2", "day3", "day4", "day5", "day6"]
+    "day1", "day2", "day3", "day4", "day5"]
 
 [workspace.dependencies]
 # Flexible concrete Error type built on std::error::Error

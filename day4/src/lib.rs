@@ -96,12 +96,10 @@ fn is_real(encname: &str, checksum: &str) -> bool {
     debug!(?tally, ?encname);
     let tally = tally
         .iter()
-        .sorted_by(|(a, num_a), (b, num_b)| {
-            match num_b.cmp(num_a) {
-                Ordering::Less => Ordering::Less,
-                Ordering::Equal => a.cmp(b),
-                Ordering::Greater => Ordering::Greater,
-            }
+        .sorted_by(|(a, num_a), (b, num_b)| match num_b.cmp(num_a) {
+            Ordering::Less => Ordering::Less,
+            Ordering::Equal => a.cmp(b),
+            Ordering::Greater => Ordering::Greater,
         })
         .map(|(c, _)| *c)
         .take(checksum.len())

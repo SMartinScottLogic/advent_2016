@@ -1,5 +1,8 @@
-use std::io::{BufRead, BufReader};
 use itertools::Itertools;
+use std::{
+    collections::HashSet,
+    io::{BufRead, BufReader},
+};
 #[allow(unused_imports)]
 use tracing::{debug, event_enabled, info, Level};
 
@@ -81,46 +84,92 @@ impl utils::Solution for Solution {
     }
 
     fn answer_part2(&self, _is_full: bool) -> Self::Result {
+        let mut r = 0;
+        for address in &self.addresses {
+            let mut start = 0;
+            let mut outside = true;
+            let mut outside_abas = HashSet::new();
+            let mut inside_abas = HashSet::new();
+            for (end, c) in address.chars().enumerate() {
+                match c {
+                    '[' if outside => {
+                        for aba in get_abas(&address[start..end], !outside) {
+                            outside_abas.insert(aba);
+                        }
+                        start = end;
+                        outside = !outside;
+                    }
+                    '[' => panic!(),
+                    ']' if !outside => {
+                        for aba in get_abas(&address[start..end], !outside) {
+                            inside_abas.insert(aba);
+                        }
+                        start = end;
+                        outside = !outside;
+                    }
+                    ']' => panic!(),
+                    _ => {}
+                }
+            }
+            for aba in get_abas(&address[start..], !outside) {
+                if outside {
+                    outside_abas.insert(aba);
+                } else {
+                    inside_abas.insert(aba);
+                }
+            }
+            if outside_abas.intersection(&inside_abas).count() > 0 {
+                r += 1;
+            }
+        }
         // Implement for problem
-        Ok(0)
+        Ok(r)
     }
 }
 
 fn contains_abba(section: &str) -> bool {
-    section.chars().tuple_windows().any(|(a, b, c, d)| a == d && b == c && a!=b)
+    section
+        .chars()
+        .tuple_windows()
+        .any(|(a, b, c, d)| a == d && b == c && a != b)
+}
+
+fn get_abas(section: &str, reverse: bool) -> Vec<(char, char, char)> {
+    section
+        .chars()
+        .tuple_windows()
+        .filter(|(a, b, c)| a == c && a != b)
+        .map(|(a, b, c)| if reverse { (b, a, b) } else { (a, b, c) })
+        .collect()
 }
 
 #[cfg(test)]
 mod test {
     use super::*;
-    use std::io::BufReader;
 
     use tracing_test::traced_test;
-    use utils::Solution;
 
     #[test]
     #[traced_test]
     fn case1() {
-        assert_eq!(true, contains_abba("abba"));
+        assert!(contains_abba("abba"));
     }
 
     #[test]
     #[traced_test]
     fn case2() {
-        assert_eq!(true, contains_abba("bddb"));
+        assert!(contains_abba("bddb"));
     }
 
     #[test]
     #[traced_test]
     fn case3() {
-        assert_eq!(false, contains_abba("aaaa"));
+        assert!(!contains_abba("aaaa"));
     }
 
     #[test]
     #[traced_test]
     fn case4() {
-        assert_eq!(true, contains_abba("ioxxoj"));
+        assert!(contains_abba("ioxxoj"));
     }
-
-
 }

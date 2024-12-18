@@ -97,12 +97,10 @@ fn is_real(encname: &str, checksum: &str) -> bool {
     let tally = tally
         .iter()
         .sorted_by(|(a, num_a), (b, num_b)| {
-            if num_a > num_b {
-                Ordering::Less
-            } else if num_a < num_b {
-                Ordering::Greater
-            } else {
-                a.cmp(b)
+            match num_b.cmp(num_a) {
+                Ordering::Less => Ordering::Less,
+                Ordering::Equal => a.cmp(b),
+                Ordering::Greater => Ordering::Greater,
             }
         })
         .map(|(c, _)| *c)
